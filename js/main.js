@@ -326,7 +326,7 @@
         btn.setAttribute('data-id', tile.id);
         grid.appendChild(btn);
       } else {
-        grid.appendChild(makeButton(tile.name, 'tile tile-temptation', tapTemptation));
+        grid.appendChild(makeButton(tile.name, 'tile tile-temptation', function () { tapTemptation(tile.name); }));
       }
     });
 
@@ -359,10 +359,11 @@
     }
   }
 
-  function tapTemptation() {
+  // 誘惑アイテム：そのアイテム用のツッコミを出す
+  function tapTemptation(name) {
     if (state.finished) return;
     state.temptationTaps += 1;
-    showToast(pick(D.COMMENTS.temptation));
+    showToast(pick(D.COMMENTS.temptation[name]));
     changeFocus(FOCUS_DELTA.temptation);
   }
 
