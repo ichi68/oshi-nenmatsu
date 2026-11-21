@@ -594,7 +594,42 @@ button:disabled { cursor: default; }
   box-shadow: 0 4px 16px rgba(74, 63, 75, 0.25);
 }
 
-/* ---------- 動きを減らす設定のとき ---------- */
+/* =========================================================
+   アニメーション（CSSのみ。ゲームの動作には影響しない）
+   ========================================================= */
+/* 1. 画面切替：0.25秒でふわっとフェードイン＋少し下から上がる */
+.screen.active { animation: screen-in 0.25s ease-out; }
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 2. 正解：カードの枠が一瞬キラッと光る */
+.card.is-correct { animation: card-shine 0.6s ease-out; }
+@keyframes card-shine {
+  0%   { box-shadow: inset 0 0 0 7px #fff, inset 0 0 0 8px var(--line), 0 4px 14px rgba(74, 63, 75, 0.12); }
+  35%  { box-shadow: inset 0 0 0 7px #fff, inset 0 0 0 8px var(--ok), 0 0 0 4px rgba(255, 255, 255, 0.9), 0 0 22px 6px rgba(216, 167, 177, 0.8); }
+  100% { box-shadow: inset 0 0 0 7px #fff, inset 0 0 0 8px var(--line), 0 4px 14px rgba(74, 63, 75, 0.12); }
+}
+
+/*    不正解：カードが小さく左右に揺れる（0.3秒） */
+.card.is-wrong { animation: card-shake 0.3s ease-in-out; }
+@keyframes card-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* 3. 結果発表：称号のチケットが少し拡大しながら現れる */
+#result.active .ticket { animation: ticket-in 0.45s ease-out 0.15s both; }
+@keyframes ticket-in {
+  from { opacity: 0; transform: scale(0.88); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ---------- 動きを減らす設定のとき（アニメーションをすべて止める） ---------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

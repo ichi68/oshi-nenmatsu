@@ -391,6 +391,7 @@
     $('cardNote').textContent = card.note;
     $('cardNote').hidden = !card.note;
     $('feedback').hidden = true;
+    $('sortCard').classList.remove('is-correct', 'is-wrong'); // 演出用クラスを外す
     setCategoryButtonsDisabled(false);
   }
 
@@ -424,6 +425,7 @@
     $('feedbackComment').textContent = comment;
     $('feedbackExplain').textContent = (correct ? '' : UI.answerIs + categoryLabel(card.answer) + '　') + card.explain;
     $('feedback').hidden = false;
+    $('sortCard').classList.add(correct ? 'is-correct' : 'is-wrong'); // 演出用（CSSで光る・揺れる）
     setCategoryButtonsDisabled(true);
 
     changeFocus(correct ? FOCUS_DELTA.correct : FOCUS_DELTA.wrong);
