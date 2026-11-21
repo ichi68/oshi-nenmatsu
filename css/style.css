@@ -1,0 +1,196 @@
+/* 骨組み段階の最低限の見た目。デザインは後の段階で SPEC.md「UI・デザイン仕様」どおりに仕上げる */
+:root {
+  --ivory: #FAF6F0;
+  --paper: #FFFDFB;
+  --dusty-pink: #D8A7B1;
+  --rose: #B9707F;
+  --lavender: #B8A9C9;
+  --lavender-light: #E7E0EF;
+  --ink: #4A3F4B;
+  --ink-soft: #8A7F8C;
+  --ok: #8FB3A0;
+  --ng: #C98B8B;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+html, body { margin: 0; }
+body {
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.app {
+  width: min(100%, 440px);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* 画面切替 */
+.screen { display: none; flex-direction: column; gap: 8px; }
+.screen.active { display: flex; }
+
+h1, h2, h3 { margin: 8px 0; }
+.sub { color: var(--ink-soft); margin: 0; }
+.big { font-size: 20px; font-weight: bold; margin: 0; }
+.strong { font-weight: bold; }
+.question { font-size: 17px; font-weight: bold; }
+
+/* ボタン（タップ領域は48px以上） */
+button {
+  min-height: 48px;
+  font-size: 16px;
+  font-family: inherit;
+  color: var(--ink);
+  border: 1px solid var(--dusty-pink);
+  border-radius: 12px;
+  background: var(--paper);
+  cursor: pointer;
+}
+button:disabled { opacity: 0.5; cursor: default; }
+.btn-main { background: var(--dusty-pink); color: #fff; border-color: var(--dusty-pink); }
+.btn-choice { background: var(--lavender-light); border-color: var(--lavender); }
+.btn-small { min-height: 36px; font-size: 12px; padding: 0 8px; }
+
+.choices { display: flex; flex-direction: column; gap: 8px; }
+
+/* 診断の進捗ドット */
+.dots { display: flex; gap: 8px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--lavender-light); border: 1px solid var(--lavender); }
+.dot.on { background: var(--dusty-pink); border-color: var(--dusty-pink); }
+
+/* ③④のヘッダー（残り日数＋集中力） */
+.game-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  background: var(--ivory);
+}
+.header-days { margin: 0; font-weight: bold; font-size: 17px; }
+.header-days.warn { color: var(--rose); animation: blink 1s steps(2, start) infinite; }
+@keyframes blink { to { opacity: 0.35; } }
+.focus { display: flex; align-items: center; gap: 8px; }
+.focus-label { font-size: 13px; white-space: nowrap; min-width: 4.5em; }
+.focus-bar {
+  flex: 1;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--lavender-light);
+  overflow: hidden;
+}
+.focus-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, var(--lavender), var(--dusty-pink));
+  box-shadow: 0 0 8px var(--dusty-pink);
+  transition: width 0.3s;
+}
+
+/* ③ 書類集め：3列4行 */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.tile { min-height: 72px; font-size: 13px; padding: 4px; }
+.tile-doc { background: var(--paper); }
+.tile-temptation { background: var(--lavender-light); border-color: var(--lavender); }
+.tile.collected { visibility: hidden; }
+
+/* ④ 振り分け */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--lavender);
+  border-radius: 16px;
+  padding: 16px;
+}
+.card-title { font-weight: bold; margin: 0 0 4px; }
+.feedback { display: flex; flex-direction: column; gap: 4px; }
+.feedback p { margin: 0; }
+.feedback-result { font-weight: bold; font-size: 18px; }
+.feedback-result.ok { color: var(--ok); }
+.feedback-result.ng { color: var(--ng); }
+.category-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+.btn-category { font-size: 13px; padding: 4px; }
+
+/* ⑤ 結果 */
+.ticket {
+  background: var(--paper);
+  border: 1px dashed var(--rose);
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+}
+.ticket-title { font-size: 28px; font-weight: bold; margin: 0; line-height: 1.35; }
+.ticket-mark { font-size: 10px; letter-spacing: 0.2em; color: var(--ink-soft); margin: 0; }
+.badge {
+  display: inline-block;
+  margin: 8px 0 0;
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: var(--lavender-light);
+  font-size: 13px;
+}
+.score-box { text-align: center; }
+.score-box p { margin: 0; }
+.big { font-size: 36px; font-weight: bold; }
+.rank { font-size: 20px; font-weight: bold; color: var(--rose); }
+.mistake-list { margin: 0; padding-left: 20px; }
+.mistake-list li { margin-bottom: 6px; }
+.mistake-answer { display: block; font-size: 13px; color: var(--rose); }
+.notice { font-size: 12px; color: var(--ink-soft); }
+.forced-box { text-align: center; }
+.forced-title { font-size: 28px; color: var(--rose); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* モーダル */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(74, 63, 75, 0.4);
+}
+.modal-box {
+  width: min(100%, 400px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background: var(--paper);
+  border-radius: 16px;
+}
+
+/* トースト */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: min(calc(100% - 32px), 400px);
+  padding: 12px 16px;
+  background: var(--ink);
+  color: #fff;
+  border-radius: 12px;
+  text-align: center;
+}

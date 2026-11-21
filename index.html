@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>限界オタクの年末調整 〜推しの周年まであと30日〜</title>
+  <meta name="description" content="推し活のノリで年末調整の書類の振り分けを覚えるブラウザゲーム。">
+  <meta property="og:title" content="限界オタクの年末調整 〜推しの周年まであと30日〜">
+  <meta property="og:description" content="推し活のノリで年末調整の書類の振り分けを覚えるブラウザゲーム。">
+  <meta property="og:url" content="https://oshi-nenmatsu.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://oshi-nenmatsu.vercel.app/assets/ogp.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- ③④で表示するヘッダー（残り日数＋集中力） -->
+    <header id="gameHeader" class="game-header" hidden>
+      <p id="headerDays" class="header-days"></p>
+      <div class="focus">
+        <span id="headerFocus" class="focus-label"></span>
+        <div class="focus-bar"><div id="focusFill" class="focus-fill"></div></div>
+      </div>
+    </header>
+
+    <!-- ① タイトル -->
+    <section id="title" class="screen">
+      <h1 data-ui="appTitle"></h1>
+      <p data-ui="appSubtitle"></p>
+      <p class="sub" data-ui="subcopy"></p>
+      <button type="button" id="startBtn" class="btn-main" data-ui="start"></button>
+      <button type="button" id="howtoBtn" class="btn-sub" data-ui="howto"></button>
+    </section>
+
+    <!-- ② オタク属性診断 -->
+    <section id="diagnosis" class="screen">
+      <h2 data-ui="diagTitle"></h2>
+      <div id="diagDots" class="dots" aria-hidden="true"></div>
+      <p id="diagProgress" class="sub"></p>
+      <div id="diagQuestionArea">
+        <p id="diagQuestion" class="question"></p>
+        <div id="diagChoices" class="choices"></div>
+      </div>
+      <div id="diagDoneArea" hidden>
+        <p data-ui="diagDone"></p>
+        <button type="button" id="toCollectBtn" class="btn-main" data-ui="toNenmatsu"></button>
+      </div>
+    </section>
+
+    <!-- ③ 書類集め -->
+    <section id="collect" class="screen">
+      <h2 data-ui="collectTitle"></h2>
+      <p class="sub" data-ui="collectHint"></p>
+      <p id="collectCount"></p>
+      <div id="tileGrid" class="tile-grid"></div>
+      <button type="button" id="toSortBtn" class="btn-main" data-ui="toSort"></button>
+    </section>
+
+    <!-- ④ 控除の振り分け -->
+    <section id="sort" class="screen">
+      <h2 data-ui="sortTitle"></h2>
+      <p id="sortProgress" class="sub"></p>
+      <div class="card">
+        <p id="cardTitle" class="card-title"></p>
+        <p id="cardNote" class="sub"></p>
+      </div>
+      <div id="feedback" class="feedback" hidden>
+        <p id="feedbackResult" class="feedback-result"></p>
+        <p id="feedbackComment"></p>
+        <p id="feedbackExplain" class="sub"></p>
+        <button type="button" id="nextBtn" class="btn-main" data-ui="next"></button>
+      </div>
+      <div id="categoryButtons" class="category-buttons"></div>
+    </section>
+
+    <!-- ⑤ 結果発表 -->
+    <section id="result" class="screen">
+      <h2 data-ui="resultTitle"></h2>
+      <div class="score-box">
+        <p class="sub" data-ui="resultScoreLabel"></p>
+        <p><span id="resultScore" class="big"></span>　<span id="resultRank" class="rank"></span></p>
+        <p id="resultCorrect" class="sub"></p>
+      </div>
+      <p id="resultType"></p>
+      <div class="ticket">
+        <p class="ticket-mark" data-ui="ticketMark"></p>
+        <p class="sub" data-ui="resultBadgeTitle"></p>
+        <p id="resultTitleText" class="ticket-title"></p>
+        <p id="resultBadge" class="badge" hidden></p>
+      </div>
+      <h3 data-ui="mistakes"></h3>
+      <ul id="mistakeList" class="mistake-list"></ul>
+      <h3 data-ui="triviaTitle"></h3>
+      <p id="resultTrivia"></p>
+      <p class="notice" data-ui="notice"></p>
+      <button type="button" id="retryBtn" class="btn-main" data-ui="retry"></button>
+      <button type="button" id="copyBtn" class="btn-sub" data-ui="copy"></button>
+    </section>
+  </div>
+
+  <!-- 遊びかたモーダル -->
+  <div id="howtoModal" class="modal" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="howtoHeading">
+      <h2 id="howtoHeading" data-ui="howtoTitle"></h2>
+      <ol id="howtoList"></ol>
+      <p class="strong" data-ui="howtoNote"></p>
+      <button type="button" id="howtoCloseBtn" class="btn-main" data-ui="close"></button>
+    </div>
+  </div>
+
+  <!-- ランダムイベントモーダル（③④の上に重ねて表示） -->
+  <div id="eventModal" class="modal" hidden>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="eventHeading">
+      <p class="sub" data-ui="eventTitle"></p>
+      <h2 id="eventHeading"></h2>
+      <button type="button" id="eventABtn" class="btn-main"></button>
+      <button type="button" id="eventBBtn" class="btn-sub"></button>
+    </div>
+  </div>
+
+  <!-- 強制提出の演出（期限0日で表示し、少し待って結果へ） -->
+  <div id="forcedModal" class="modal" hidden>
+    <div class="modal-box forced-box" role="alertdialog" aria-modal="true" aria-labelledby="forcedHeading">
+      <h2 id="forcedHeading" class="forced-title" data-ui="forcedSubmit"></h2>
+      <p data-ui="forcedSubmitNote"></p>
+    </div>
+  </div>
+
+  <!-- トースト（短いコメント表示） -->
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
